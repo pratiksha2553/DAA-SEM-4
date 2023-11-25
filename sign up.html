@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title style="color: darkgreen;">Sign-Up</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .signup-panel {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar {
+            background-color: darkgreen;
+            border-color: darkgreen;
+        }
+
+        .navbar-brand,
+        .navbar-nav li a {
+            color: white;
+        }
+    </style>
+    <style>
+        body {
+            background-image: url('can.jpg');
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" data-toggle="collapse" data-target="#abc">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Canteen Automation System</a>
+            </div>
+            <div class="collapse navbar-collapse" id="abc">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 100px;">
+        <div class="row">
+            <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3">
+                <div class="signup-panel">
+                    <h1 class="text-center">Sign Up</h1>
+                    <form id="registrationForm" method="post"> <!-- Corrected the opening tag -->
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="email" placeholder="E-mail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="password" placeholder="Password" name="password"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="Contact" name="contact" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="City" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Address" name="address" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block" style="background-color: darkgreen;">Signup</button>
+                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    </form> <!-- Corrected the closing tag -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const registrationForm = document.querySelector('#registrationForm');
+
+    registrationForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(registrationForm);
+        const jsonData = {};
+        formData.forEach(function (value, key) {
+            jsonData[key] = value;
+        });
+
+        fetch('http://localhost:8080/registration', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server Response:', data);
+                if (data.error) {
+                    // Display error message to the user (email already in use)
+                    alert(data.error);
+                } else {
+                    // Registration successful, redirect to login page
+                    window.location.href = 'login.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+});
+
+      
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback and Review</title>
+    <!-- Add your existing head content here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #fefffe; /* Light green background color */
+        }
+
+        .rating-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .rating {
+            display: flex;
+            margin-right: 10px;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    color: #ccc;
+    transition: color 0.3s;
+    margin-bottom: 10px;
+        }
+
+
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #FFD700;
+        }
+
+        .rating input:checked ~ label,
+        .rating:not(:checked) label:hover,
+        .rating input:checked ~ label:hover,
+        .rating input:checked ~ label:hover ~ label {
+            color: #fbfb00;
+        }
+
+        .selected-rating {
+            color: #171716;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .selected-rating:hover {
+            color: #ccc;
+        }
+
+        .icon {
+            width: 150px; /* Adjust the size of the icon */
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Your existing navigation and content here -->
+
+    <div class="container">
+        <div class="jumbotron">
+            <h2>Feedback and Review</h2>
+            <p>Please share your thoughts about our canteen services.</p>
+
+            <!-- Add a form for feedback -->
+            <form action="/submit_feedback" method="post">
+
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="feedback">Feedback:</label>
+                    <textarea class="form-control" id="feedback" name="feedback" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                 
+                    <div class="rating-container">
+                        <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5">
+                            <label for="star5">&#9733;</label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4">&#9733;</label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3">&#9733;</label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2">&#9733;</label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1">&#9733;</label>
+                        </div>
+                        <img src="stars.jpg" alt="Heart Icon" class="icon">
+                    </div>
+                    <div id="selected-rating" class="selected-rating">Selected Rating: None</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            </form>
+
+            <!-- Display existing reviews if any -->
+
+            <div class="reviews">
+                <!-- Display reviews dynamically -->
+                <!-- You can fetch and display reviews from your backend using JavaScript or server-side scripting -->
+            
+            </div>
+        </div>
+    </div>
+
+    <!-- Your existing footer here -->
+
+    <script>
+        // JavaScript for capturing and displaying selected star rating
+        const ratingStars = document.querySelectorAll('.rating input');
+        const selectedRating = document.getElementById('selected-rating');
+        const reviewsList = document.getElementById('reviews-list');
+
+        document.querySelector('form').addEventListener('submit', async function (event) {
+    event.preventDefault(); // Prevent the form from submitting in the traditional way
+
+    console.log('Form submitted');
+
+    // Get user input
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const feedback = document.getElementById('feedback').value;
+    const ratingInput = document.querySelector('.rating input:checked');
+
+    console.log('Name:', name);
+    console.log('Email:', email);
+    console.log('Feedback:', feedback);
+    console.log('Rating Input:', ratingInput);
+
+    let rating = 'No Rating'; // Default value if no rating is selected
+
+    if (ratingInput) {
+        rating = ratingInput.value;
+    } else {
+        console.warn('No rating selected');
+    }
+
+    console.log('Rating:', rating);
+    selectedRating.textContent = `Selected Rating: ${rating}`;
+
+
+    // Send data to the server
+    try {
+            const response = await fetch('http://127.0.0.1:8080/submit_feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    feedback,
+                    rating,
+                }),
+            });
+        if (response.ok) {
+            console.log('Feedback submitted successfully');
+            // Reset form after successful submission
+       
+            // Display prompt
+            alert('Feedback submitted successfully!');
+            window.location.href = 'first.html';
+
+        } else {
+            console.error('Failed to submit feedback');
+            alert('Error submitting feedback. Please enter correct information.')
+          
+        }
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        
+    }
+});
+
+
+    </script>
+    </script>
+</body>
+</html>

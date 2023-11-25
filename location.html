@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #map {
+            height: calc(330px + 3%); /* Make the map 3% bigger in height */
+            width: 80%; /* Set your preferred width */
+            margin: 10px auto 20px; /* Center the map horizontally and add top and bottom margins */
+        }
+
+        .address-box {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 20px; /* Adjust the top margin as needed */
+        }
+
+        .address-input {
+            margin: 5px;
+            padding: 5px;
+            width: 45%;
+        }
+
+        #saveAddressButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: rgb(29, 86, 86);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #saveAddressButton:hover {
+            background-color: rgb(7, 39, 55);
+        }
+    </style>
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Include Leaflet Control Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+</head>
+
+<body>
+    
+
+    <div id="map"></div>
+    <div class="address-box">
+        <input type="text" id="doorFlatNo" class="address-input" placeholder="Door/Flat No">
+        <input type="text" id="landmark" class="address-input" placeholder="Landmark">
+    </div>
+    <button id="saveAddressButton" onclick="saveAndProcessAddress()">Save Address and Process</button>
+
+    <!-- Include Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Include Leaflet Control Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+        var map = L.map('map').setView([0, 0], 15);
+    
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    
+        var doorFlatNoInput = document.getElementById('doorFlatNo');
+        var landmarkInput = document.getElementById('landmark');
+    
+        // Add the geocoding control to the map
+        var geocoder = L.Control.geocoder({
+            collapsed: false,
+            defaultMarkGeocode: false
+        })
+            .on('markgeocode', function (e) {
+                var userLatLng = e.geocode.center;
+                var bounds = e.geocode.bbox;
+    
+                if (bounds) {
+                    map.fitBounds(bounds);
+                } else {
+                    map.setView(userLatLng, 15);
+                }
+    
+                // Add a marker at the user's location
+                L.marker(userLatLng).addTo(map)
+                    .bindPopup("Your Location").openPopup();
+    
+                // Update the input with the selected address
+                doorFlatNoInput.value = e.geocode.properties.address + ' ';
+                landmarkInput.value = '';
+            })
+            .addTo(map);
+    
+            function saveAndProcessAddress() {
+    var doorFlatNo = doorFlatNoInput.value.trim();
+    var landmark = landmarkInput.value.trim();
+    var selectedLocation = document.querySelector('.leaflet-control-geocoder-form input').value;
+
+    localStorage.setItem('deliveryAddress', `${doorFlatNo}, ${landmark}`); // Save flat no and landmark
+    localStorage.setItem('selectedLocation', selectedLocation); // Save the location searched by the user
+
+    window.location.href = 'payment.html'; // Redirect to payment.html
+    // ...
+}
+
+
+
+
+
+    </script>
+    
+
+</body>
+
+</html>
